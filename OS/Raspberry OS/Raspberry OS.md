@@ -1,10 +1,8 @@
-# Catatan
-
 ## INSTALL OS
 
 ### RASPBERRY OS
 
-Untuk menjalankan Raspberry Pi, diperlukan sebuah OS dan salah satu yang sering digunakan adalah OS dari Raspberry.
+To run a Raspberry Pi, an operating system (OS) is required, and one of the commonly used OSes is the Raspberry Pi OS.
 
 (Source: <https://www.raspberrypi.com/software/>)
 
@@ -18,17 +16,17 @@ Untuk menjalankan Raspberry Pi, diperlukan sebuah OS dan salah satu yang sering 
 
    Ubuntu: <https://downloads.raspberrypi.org/imager/imager_latest_amd64.deb>
 
-2. Setelah download dan install Raspberry Pi Imager, selanjutnya adalah menginstal Raspberry OS menggunakan Raspberry Pi Imager
+2. After downloading and installing the Raspberry Pi Imager, proceed to install the Raspberry Pi OS using the Raspberry Pi Imager
 
-   * Buka `Raspberry Pi Imager`, Pilih `Raspberry Pi Device` yang digunakan, tentukan `Operating System` yang ingin diinstall, dan Pilih Storage (SD Card) yang akan digunakan!
+   * Open `Raspberry Pi Imager`, select the `Raspberry Pi Device` you are using, choose the `Operating System` you want to install, and select the `Storage` device (SD Card) you will use.
    ![alt text](<Image/Raspberry Pi Imager.png>)
 
-   * Kemudian klik `NEXT`, akan muncul pop up seperti di bawah
+   * Then click NEXT, and a pop-up window will appear as shown below:
    ![alt text](<Image/Klik Next.png>)
 
-   Kalau tidak ingin melakukan pengaturan OS, klik `NO`, pengaturan bisa dilakukan nanti melalui desktop setelah OS terinstall
+   If you don't want to customize the OS immediately, click `NO`. You can make these customizations later via the desktop after the OS is installed.
 
-   * Jika ingin melakukan kustomasi, klik `EDIT SETTINGS` dan lakukan pengaturan yang diinginkan
+   * If you want to customize the settings, click `EDIT SETTINGS` and configure the desired options.
    ![alt text](Image/general.png)
 
    ```text
@@ -46,22 +44,22 @@ Untuk menjalankan Raspberry Pi, diperlukan sebuah OS dan salah satu yang sering 
        └── Keyboard layout: us
    ```
 
-   Jika sudah selesai setting, maka klik `SAVE`
+   Once you have completed the settings, click `SAVE`.
 
-   * Selanjutnya, klik `YES` untuk memulai instalasi
+   * Next, click `YES` to start the installation.
    ![alt text](<Image/OS setting.png>)
 
-   * Selanjutnya akan ada pop-up yang menyatakan data di SD Card akan dihapus, klik `YES`
+   * A pop-up will then appear indicating that all data on the SD card will be erased. Click `YES`.
    ![alt text](<Image/data erased.png>)
 
-   * Proses instalasi berlangsung &pm; 20 menit
+   * The installation process takes approximately 20 minutes
    ![alt text](Image/writing.png)
    ![alt text](Image/selesai.png)
 
-   * Setelah selesai maka lepaskan SD Card dan masukkan SD Card ke Raspberry Pi. Hubungkan layar, keyboard, dan mouse pada raspberry pi. lalu hubungkan adapter dayanya untuk menyalakan Raspberry Pi
+   * Once the process is complete, remove the SD card and insert it into your Raspberry Pi. Connect the monitor, keyboard, and mouse to the Raspberry Pi. Then, plug in the power adapter to turn on the Raspberry Pi.
    ![alt text](<Image/Setup Raspberry Pi.jpg>)
 
-   * Selanjutnya lakukan update
+   * Next, proceed with updating the system.
 
    ```bash
    sudo apt update
