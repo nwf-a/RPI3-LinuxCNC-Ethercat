@@ -1,4 +1,4 @@
-### RIP-INSTALLATION
+# RIP-INSTALLATION
 
 After installing the preempt-rt kernel, the next step is to install LinuxCNC. For the Raspberry Pi 3, there is no ISO image file available for installing LinuxCNC. Therefore, you need to build LinuxCNC from source.
 
@@ -50,7 +50,7 @@ After installing the preempt-rt kernel, the next step is to install LinuxCNC. Fo
 8. Install Required Build Dependencies
 
    ```bash
-   sudo apt-get install <dependendencies-1> <dependendencies-2> <dependendencies-3> ...
+   sudo apt install <dependendencies-1> <dependendencies-2> <dependendencies-3> ...
    ```
 
    Replace `<dependencies-1>`, `<dependencies-2>`, `<dependencies-3>`, etc., with the actual names of the packages you need to install. Ensure all necessary dependencies for building LinuxCNC are listed.
