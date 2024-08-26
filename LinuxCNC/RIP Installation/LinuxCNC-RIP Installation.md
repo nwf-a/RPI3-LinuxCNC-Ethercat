@@ -20,7 +20,7 @@ After installing the preempt-rt kernel, the next step is to install LinuxCNC. Fo
 
    ```bash
    cd linuxcnc-dev
-   git checkout 2.9
+   git checkout f24ea9b19ea794ceb8ff614f3f184f5af0d25144
    ```
 
 4. Change to the Debian Folder
