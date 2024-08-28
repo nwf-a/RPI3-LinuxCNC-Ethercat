@@ -1,102 +1,167 @@
-## BUILD ETHERCAT FROM SOURCE
+# Build EtherCAT from Source
 
-IF YOU DID CLOSE OUT THE COMMAND LINE FOR SOME REASON, GO RUN THE LINUXCNC SCRIPT. 
-IF YOUR COMMAND LINE IS STILL OPEN, THEN JUST SKIP DOWN PAST THIS AND START THE ETHERCAT INSTALL.
+After installing LinuxCNC, the next step is to install EtherCAT. Follow the procedure below:
 
-FOR THE LINUXCNC SCRIPT:
+## Initial Steps
 
-MOVE TO THE LINUXCNC SOURCE FOLDER
+If you have closed the command line, please run the LinuxCNC script again. If the command line is still open, you can skip this step and proceed directly to the EtherCAT installation.
 
-```bash
-cd /linuxcnc-dev/src/
-```
+For the LinuxCNC script:
 
-RUN THE LINUXCNC SCRIPT
+1. Navigate to the LinuxCNC Source Folder
 
-```bash
-. ../scripts/rip-environment
-```
+    ```bash
+    cd /develop/linuxcnc-dev/src/
+    ```
 
-### ETHERCAT INSTALL
+2. Run the LinuxCNC Script
 
-1. CHANGE BACK TO HOME FOLDER
+    ```bash
+    . ../scripts/rip-environment
+    ```
+
+## EtherCAT Installation
+
+1. Change to the `develop` Folder
 
     ```bash
     cd ..
     cd ..
     ```
 
-    ONCE BACK IN THE HOME FOLDER, CLONE THE ETHERCAT REPOSITORY.  JUST MAKE SURE YOU ARE IN THE HOME FOLDER AND NOT IN ANOTHER LOCATION SO THAT THE “ethercat-master” FOLDER IS CREATED IN THE CORRECT LOCATION.
+    Ensure you are in the `develop` folder so that the `ethercat-master` directory is created in the correct location.
 
-2. CLONE ETHERCAT
+2. Clone the EtherCAT Repository
 
     ```bash
     git clone https://gitlab.com/etherlab.org/ethercat.git ethercat-master
     ```
 
-    CHANGE TO THE ETHERCAT FOLDER
+3. Navigate to the EtherCAT Folder
 
     ```bash
     cd ethercat-master
     ```
 
-    CHANGE TO THE STABLE BRANCH
+4. Switch to the Stable Branch
 
     ```bash
     git checkout stable-1.6
     ```
 
-3. BUILD THE SOFTWARE AS REGULAR USER, NOT AS ROOT
+5. Build the Software as a Regular User
 
    ```bash
    ./bootstrap
    ```
 
-   GET ETHERNET INFOMATION
+   Get Ethernet Information:
 
    ```bash
    sudo lspci -v
    ```
 
-   CONFIGURE TO THE TYPE OF MODULE NEEDED
+   Configure for the Required Module Type:
 
    ```bash
    ./configure --sysconfdir=/etc/ --disable-8139too --enable-userlib --enable-generic
    ```
 
-   THEN MAKE WITH MODULES
+   Build All Modules:
 
    ```bash
    make all modules
    ```
 
-4. THEN INSTALL THE SOFTWARE AS ROOT
+   If the build fails and displays errors such as:
 
-   BECOME ROOT
+   ```text
+   error: ethercat uses VFP register arguments, ../master/soe_errors.o does not
+   warning: ../master/soe_errors.o uses 2-byte wchar_t yet the output is to use 4-byte wchar_t; use of wchar_t values across objects may fail
+   ```
+
+   Please follow these steps:
+
+   Navigate to tool folder:
+
+   ```bash
+   cd tool/ 
+   ```
+
+   Edit Makefile.am:
+
+   ```bash
+   sudo geany Makefile.am
+   ```
+
+   `Remove` the line containing `../master/soe_errors.c` (typically `line 39`). Then, `save` the changes and `exit`.
+
+   Edit SoeCommand.cpp:
+
+   ```bash
+   sudo geany SoeCommand.cpp
+   ```
+
+   `Remove` lines containing `extern const ec_code_msg_t soe_error_codes[]`; (typically line 35). 
+
+   On line 34, add `#include "../master/soe_errors.c"`
+
+   Then, save the changes and exit.
+
+   ![Fix_error](Images/fix_soecommand_error.png)
+
+   Return to the EtherCAT Directory (ethercat-master):
+
+   ```bash
+   cd ..
+   ```
+
+   Clean the Build:
+
+   ```bash
+   make clean
+   ```
+
+   Reconfigure the Build Environment:
+
+   ```bash
+   ./bootstrap
+   ./configure --sysconfdir=/etc/ --disable-8139too --enable-userlib --enable-generic
+   ```
+
+   Rebuild EtherCAT:
+
+   ```bash
+   make all modules
+   ```
+
+6. THEN INSTALL THE SOFTWARE AS ROOT
+
+   SWITCH TO ROOT USER
 
    ```bash
    sudo su
    ```
 
-   INSTALL THE SOFTWARE AS ROOT
+   INSTALL THE MODULES AND SOFTWARE AS ROOT
 
    ```bash
    make modules_install install
    ```
 
-   DEPENDENCY MODULES COMMAND
+   UPDATE MODULES DEPENDENCIES
 
    ```bash
    depmod
    ```
 
-   EXIT ROOT
+   EXIT ROOT USER
 
    ```bash
    exit
    ```
 
-5. THEN GET SERVICE WORKING
+7. THEN GET SERVICE WORKING
 
    GET ETHER ADDRESS – WRITE DOWN OR COPY & PASTE THE MAC ADDRESS
 
@@ -152,7 +217,7 @@ RUN THE LINUXCNC SCRIPT
 
     YOU SHOULD SEE NUMBERS IN THE LINES, IF NOT AND IT’S ALL ZERO’S THEN SOMETHING IS NOT LINKED CORRECTLY IN ETHERCAT OR LINUX.  MAKE SURE IT SHOWS A CHANGE AFTER DOING THE “ethercat master” COMMAND.
 
-6. SETUP PERMISSION
+8. SETUP PERMISSION
 
     OPEN IN PICO TO GIVE ETHERCAT PORT STARTUP PERMISSION
 
@@ -223,7 +288,7 @@ RUN THE LINUXCNC SCRIPT
     include Kbuild
 
     cc-option = $(shell if $(CC) $(CFLAGS) $(1) -S -o /dev/null -xc /dev/null \
-                > /dev/null 2>&1; then echo "$(1)"; else echo "$(2)"; fi ;)
+                > /dev/null 2>&1; then echo "$(1)"; else echo "$(2)"; fi;)
 
     .PHONY: all clean install
 
@@ -237,7 +302,7 @@ RUN THE LINUXCNC SCRIPT
     $(module):
         $(MAKE) EXTRA_CFLAGS="$(EXTRA_CFLAGS)" KBUILD_EXTRA_SYMBOLS="$(RTLIBDIR)/Module.symvers $(RTAIDIR)/modules/ethercat/Module.symvers" -C $(KERNELDIR) SUBDIRS=`pwd` CC=$(CC) V=0 modules
 
-    clean::
+    clean:
         rm -f $(obj-m)
         rm -f *.mod.c .*.cmd
         rm -f modules.order Module.symvers
@@ -252,17 +317,19 @@ RUN THE LINUXCNC SCRIPT
 
     %.o: %.c
         $(CC) -o $@ $(EXTRA_CFLAGS) -Os -c $<
+    
     endif
 
     all: $(module)
 
-    clean::
+    clean:
         rm -f $(module)
         rm -f $(lcec-objs)
 
     install: $(module)
         mkdir -p $(DESTDIR)$(RTLIBDIR)
         cp $(module) $(DESTDIR)$(RTLIBDIR)/
+
     ```
 
     ONCE THE “realtime.mk” FILE HAS BEEN REPLACED WITH THE ABOVE CODE, THEN SAVE AND EXIT PICO WITH `ctl + o` AND `ctl + x`.
@@ -325,4 +392,28 @@ RUN THE LINUXCNC SCRIPT
     exit
     ```
 
-NOW IT IS TIME TO GO MAKE AN AXIS CONFIG AND ADD THE ETHERCAT XML FILE TO GET IT ALL LINKED AND A WORKING SYSTEM
+IF YOU ARE USING CIA402 COMPATIBLE DRIVES:
+
+RETURN TO `develop` FOLDER:
+
+```bash
+cd ~/develop
+```
+
+CLONE hal-cia402 REPO FROM dbraun:
+
+```bash
+git clone https://github.com/dbraun1981/hal-cia402.git
+```
+
+MOVE TO `hal-cia402` FOLDER:
+
+```bash
+cd hal-cia402
+```
+
+Install `cia402.comp`
+
+```bash
+halcompile --install cia402.comp
+```
